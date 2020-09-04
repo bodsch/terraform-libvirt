@@ -35,7 +35,7 @@ data "template_file" "network_config" {
 
   for_each = var.servers
 
-  template = file("${path.module}/network_config.cfg")
+  template = file("${path.module}/network_config_static.cfg")
 
   vars = {
     domain   = var.domain
