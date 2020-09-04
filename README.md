@@ -96,6 +96,9 @@ $ virsh pool-define-as pool  --type dir --target /var/lib/libvirt/pool
 $ virsh pool-autostart pool
 $ virsh pool-start pool
 ```
+restart the `libvirtd` service
+(`virsh pool-start pool` or `systemctl restart libvirtd`)
+
 
 ### Download
 
@@ -141,6 +144,7 @@ $ sudo curl -s https://cdimage.debian.org/cdimage/openstack/current-9/debian-9-o
 $ sudo curl -s https://cdimage.debian.org/cdimage/openstack/current-10/debian-10-openstack-amd64.qcow2 --output /var/lib/libvirt/pool/debian-10-amd64.qcow2
 ```
 
+#### to test
 
 ```
 $ # https://cdimage.debian.org/cdimage/openstack/current-10/
@@ -149,6 +153,34 @@ $ # https://files.devuan.org/devuan_ascii/virtual/devuan_ascii_2.0.0_amd64_qemu.
 
 
 ## usage
+
+The default IP Range are `192.168.124.0/24`
+The default Domain are `virt.local`
+
+create an config-file.
+**(If the Makefile is used, it must be exactly the same as the directory from which the Makefile is called!)**
+
+```
+$ cat terraform-libvirt.tfvars
+servers = {
+  "srv-01" = {
+    "memory"    = 16384             # 16 GiB RAM
+    "vcpu"      = 2                 #  2 CPU Cores
+    "disk_size" = "64424509440"     # 60 GiB HDD
+    octetIP     = 10                # 192.168.124.10
+    "hostname"  = "build"           # Hostname
+  }
+  "srv-02" = {
+    "memory"    = 2048              # 2 GiB RAM
+    "vcpu"      = 2                 # s CPU Cores
+    "disk_size" = "21474836480"     # 20 GiB HDD
+    octetIP     = 11                # 192.168.124.11
+    "hostname"  = "harbor"          # Hostname
+  }
+}
+```
+
+### Example
 
 ```
 $ terraform init
@@ -177,4 +209,9 @@ $ terraform destroy [-auto-approve]
 
 $ terraform destroy -target=libvirt_domain.${DOMAIN}
 ```
+
+## TODOs
+
+- better support for other distributions
+- better way for `cloud_init.cfg`
 
